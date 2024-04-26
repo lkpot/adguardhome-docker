@@ -36,6 +36,11 @@ ENV NODE_OPTIONS=--openssl-legacy-provider
 
 RUN make init && make VERSION=${VERSION}
 
+RUN apt-get update && \
+    apt-get install -y libcap2-bin && \
+    rm -rf /var/lib/apt/lists/* && \
+    setcap 'cap_net_bind_service=+ep' /build/AdGuardHome
+
 FROM debian:bookworm-slim
 
 COPY --from=build /build/AdGuardHome /opt/adguardhome/
@@ -44,7 +49,10 @@ RUN apt-get update && \
     apt-get install -y \
       ca-certificates  && \
     rm -rf /var/lib/apt/lists/* && \
-    ln -sf /opt/adguardhome/AdGuardHome /usr/bin/AdGuardHome
+    ln -sf /opt/adguardhome/AdGuardHome /usr/bin/AdGuardHome && \
+    useradd --system -s /usr/sbin/nologin adguardhome
+
+USER adguardhome
 
 WORKDIR /etc/adguardhome/
 ENTRYPOINT [ "AdGuardHome" ]
