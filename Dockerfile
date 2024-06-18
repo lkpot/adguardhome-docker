@@ -1,4 +1,4 @@
-ARG VERSION=v0.107.48
+ARG VERSION=v0.107.51
 
 FROM debian:bookworm-slim as source
 
@@ -14,8 +14,8 @@ RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && \
 
 FROM debian:bookworm-slim as go
 
-ENV VERSION=1.22.2 \
-    CHECKSUM=5901c52b7a78002aeff14a21f93e0f064f74ce1360fce51c6ee68cd471216a17
+ENV VERSION=1.22.4 \
+    CHECKSUM=ba79d4526102575196273416239cca418a651e049c2b099f3159db85e7bade7d
 
 WORKDIR /go
 ADD --checksum="sha256:${CHECKSUM}" "https://go.dev/dl/go${VERSION}.linux-amd64.tar.gz" .
