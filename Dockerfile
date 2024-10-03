@@ -1,6 +1,6 @@
-ARG VERSION=v0.107.51
+ARG VERSION=v0.107.52
 
-FROM debian:bookworm-slim as source
+FROM debian:bookworm-slim AS source
 
 RUN apt-get update && \
     apt-get install -y git && \
@@ -12,10 +12,10 @@ WORKDIR /source
 RUN git clone https://github.com/AdguardTeam/AdGuardHome.git . && \
     git checkout ${VERSION}
 
-FROM debian:bookworm-slim as go
+FROM debian:bookworm-slim AS go
 
-ENV VERSION=1.22.4 \
-    CHECKSUM=ba79d4526102575196273416239cca418a651e049c2b099f3159db85e7bade7d
+ENV VERSION=1.22.5 \
+    CHECKSUM=904b924d435eaea086515bc63235b192ea441bd8c9b198c507e85009e6e4c7f0
 
 WORKDIR /go
 ADD --checksum="sha256:${CHECKSUM}" "https://go.dev/dl/go${VERSION}.linux-amd64.tar.gz" .
@@ -23,7 +23,7 @@ ADD --checksum="sha256:${CHECKSUM}" "https://go.dev/dl/go${VERSION}.linux-amd64.
 RUN tar -xf "go${VERSION}.linux-amd64.tar.gz" -C . && \
     rm "go${VERSION}.linux-amd64.tar.gz"
 
-FROM node:21 as build
+FROM node:22 AS build
 
 COPY --from=go /go /usr/local
 ENV PATH="${PATH}:/usr/local/go/bin"
